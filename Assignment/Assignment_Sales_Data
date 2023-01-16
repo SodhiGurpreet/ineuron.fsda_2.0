@@ -44,16 +44,19 @@ Alter TABLE SALES_DATA ADD PRIMARY KEY (order_id);
  
 select ORDER_ID, substring(ORDER_ID,9,9) as ORDER_EXTRACT from SALES_DATA;
 
----5. Create a new column called Discount Flag and categorize it based on discount. Use ‘Yes’ if the discount is greater than zero else ‘No’.
+update SALES_DATA set ORDER_EXTRACT = (substring(ORDER_ID,9,9));
 
-select *,
+---5. Create a new column called Discount Flag and categorize it based on discount. Use ‘Yes’ if the discount is greater than zero else ‘No’.
+ALTER TABLE SALES_DATA add Discount_Flag varchar;
+
+update SALES_DATA set Discount_Flag =        
         CASE
-            WHEN DISCOUNT >0 THEN 'YES'     
+            WHEN DISCOUNT < 0 THEN 'YES'     
             ELSE 'NO'
-        END AS Discount_Flag
-FROM SALES_DATA;
+        END
 
 ---6. Create a new column called process days and calculate how many days it takes for each order id to process from the order to its shipment.
+
 ALTER TABLE SALES_DATA add process_days int;
 
 update SALES_DATA set process_days = datediff('day',DATE(ORDER_DATE),DATE(SHIP_DATE));
@@ -75,4 +78,5 @@ update SALES_DATA set RATING =
                         WHEN process_days <= '6' and process_days > '3' THEN '4'
                         WHEN process_days <= '10' and process_days > '6' THEN '3'
                         ELSE '2'
-            END
+        END
+--------------------------------------------------------------------------------------------------------------------------------------------------------------
